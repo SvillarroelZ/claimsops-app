@@ -1,0 +1,60 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+out/
+bin/
+obj/
+
+# Database
+*.db
+*.sqlite
+postgres-data/
+
+# Test coverage
+coverage/
+*.cover
+.coverage
+htmlcov/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+.venv/
+
+# .NET
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+[Dd]ebug/
+[Rr]elease/
+.vs/

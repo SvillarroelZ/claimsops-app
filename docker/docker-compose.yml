@@ -1,0 +1,39 @@
+# Docker Compose configuration for ClaimsOps development environment
+# Purpose: Run PostgreSQL database locally for both claims-service and audit-service
+# Usage: docker-compose up -d from the docker/ directory
+
+version: '3.8'
+
+services:
+  # PostgreSQL database service
+  # - Shared by claims-service (C#) and audit-service (Python)
+  # - Credentials loaded from .env file
+  # - Data persisted in named volume
+  postgres:
+    image: postgres:15-alpine
+    container_name: claimsops-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - claimsops-network
+
+# Named volume for PostgreSQL data persistence
+volumes:
+  postgres_data:
+    driver: local
+
+# Network for inter-service communication
+networks:
+  claimsops-network:
+    driver: bridge
