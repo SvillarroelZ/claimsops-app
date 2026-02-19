@@ -1,0 +1,61 @@
+# =============================================================================
+# ClaimsOps Development Environment - Docker Compose Configuration
+# =============================================================================
+# Defines containerized services for local development.
+# All credentials are loaded from .env file (see .env.example for template).
+#
+# Services:
+#   postgres - PostgreSQL 15 database shared by claims-service and audit-service
+#
+# Commands:
+#   Start:  docker-compose up -d
+#   Stop:   docker-compose down
+#   Logs:   docker-compose logs postgres
+#   Reset:  docker-compose down -v (removes all data)
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  # Primary data store for claims and audit events.
+  # Connection string: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: claimsops-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - claimsops-network
+
+# =============================================================================
+# Volumes
+# =============================================================================
+# Named volumes persist data between container restarts.
+# Use 'docker-compose down -v' to remove volumes and reset database.
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+
+# =============================================================================
+# Networks
+# =============================================================================
+# Internal bridge network for service-to-service communication.
+# Services can reference each other by container name (e.g., claimsops-postgres).
+# =============================================================================
+networks:
+  claimsops-network:
+    driver: bridge

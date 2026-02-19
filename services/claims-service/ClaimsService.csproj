@@ -1,0 +1,26 @@
+<!--
+  ClaimsService Project Configuration
+  
+  This file defines the .NET project settings, target framework, and package dependencies.
+  MSBuild uses this file to compile the application.
+  
+  Key settings:
+    TargetFramework  - .NET version (net10.0)
+    Nullable         - Enables C# nullable reference types for null safety
+    ImplicitUsings   - Auto-imports common namespaces (System, System.Linq, etc.)
+-->
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- NuGet Package Dependencies -->
+  <ItemGroup>
+    <!-- OpenAPI/Swagger support for API documentation -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>

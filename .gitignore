@@ -1,0 +1,115 @@
+# =============================================================================
+# ClaimsOps Application - Git Ignore Configuration
+# =============================================================================
+# This file specifies patterns for files that Git should not track.
+# Keeping sensitive data, build artifacts, and dependencies out of version control.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Environment Variables
+# Contains database credentials, API keys, and other sensitive configuration.
+# Each developer creates their own .env file from .env.example template.
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.env
+
+# -----------------------------------------------------------------------------
+# IDE and Editor Configuration
+# Personal editor settings that vary between developers.
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vs/
+
+# -----------------------------------------------------------------------------
+# Operating System Files
+# Metadata files created by macOS and Windows.
+# -----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------------------------------------------------------
+# Log Files
+# Application logs generated during runtime.
+# -----------------------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -----------------------------------------------------------------------------
+# Dependencies
+# Package manager directories - dependencies are restored from lock files.
+# -----------------------------------------------------------------------------
+node_modules/
+vendor/
+packages/
+
+# -----------------------------------------------------------------------------
+# Build Outputs
+# Compiled binaries and build artifacts - regenerated on each build.
+# -----------------------------------------------------------------------------
+dist/
+build/
+out/
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# -----------------------------------------------------------------------------
+# .NET Specific
+# Visual Studio and .NET build system generated files.
+# -----------------------------------------------------------------------------
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# -----------------------------------------------------------------------------
+# Database
+# Local database files and Docker volume data.
+# -----------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+postgres-data/
+pgdata/
+
+# -----------------------------------------------------------------------------
+# Test Coverage
+# Generated test coverage reports.
+# -----------------------------------------------------------------------------
+coverage/
+*.cover
+.coverage
+htmlcov/
+.nyc_output/
+
+# -----------------------------------------------------------------------------
+# Python
+# Python bytecode, cache, and virtual environment directories.
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+.venv/
+*.egg-info/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
