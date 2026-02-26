@@ -8,8 +8,10 @@
 // Port: http://localhost:5115 (configured in Properties/launchSettings.json)
 // =============================================================================
 
+using ClaimsService.Data;
 using ClaimsService.Repositories;
 using ClaimsService.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,13 @@ builder.Services.AddControllers();
 // AddOpenApi: Enables OpenAPI/Swagger documentation generation.
 // Available at /openapi/v1.json in development environment.
 builder.Services.AddOpenApi();
+
+// RegisterDatabase context with PostgreSQL connection string
+// Connection string is read from appsettings.json
+// DefaultConnection property contains database configuration
+builder.Services.AddDbContext<ClaimsDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 // -----------------------------------------------------------------------------
 // Application Services Registration
