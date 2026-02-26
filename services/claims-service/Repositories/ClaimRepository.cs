@@ -1,61 +1,60 @@
 // =============================================================================
-// ClaimRepository - In-Memory Implementation
+// ClaimRepository - Entity Framework Core Implementation
 // =============================================================================
-// Temporary in-memory implementation of IClaimRepository for development.
-// This will be replaced with Entity Framework Core in Phase 5.
+// Implements IClaimRepository using EF Core for PostgreSQL persistence.
+// All data is stored in the PostgreSQL database defined in ClaimsDbContext.
 //
-// Note: Data is stored in a static dictionary, so it persists across requests
-// but is lost when the application restarts.
-//
-// Thread Safety:
-//   - Uses ConcurrentDictionary for thread-safe operations
-//   - Safe for use in async web request handling
+// Note: Uses ClaimsDbContext for database access.
+// Thread Safety: DbContext is scoped per request, thread-safe by default.
 // =============================================================================
 
-using System.Collections.Concurrent;
+using ClaimsService.Data;
 using ClaimsService.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClaimsService.Repositories;
 
 /// <summary>
-/// In-memory repository implementation for development and testing.
-/// Data is lost when the application restarts.
+/// Repository implementation using Entity Framework Core.
+/// Provides data access to PostgreSQL database via ClaimsDbContext.
 /// </summary>
 public class ClaimRepository : IClaimRepository
 {
-    // Thread-safe dictionary to store claims in memory
-    // Key: Claim ID (Guid), Value: Claim entity
-    private static readonly ConcurrentDictionary<Guid, Claim> _claims = new();
-
+    private readonly ClaimsDbContext _context;
     private readonly ILogger<ClaimRepository> _logger;
 
     /// <summary>
     /// Constructor with dependency injection.
     /// </summary>
+    /// <param name="context">EF Core database context</param>
     /// <param name="logger">Logger for repository operations</param>
-    public ClaimRepository(ILogger<ClaimRepository> logger)
+    public ClaimRepository(ClaimsDbContext context, ILogger<ClaimRepository> logger)
     {
+        _context = context;
         _logger = logger;
     }
 
     /// <summary>
-    /// Retrieves all claims from the in-memory store.
+    /// Retrieves all claims from the database.
     /// </summary>
     /// <returns>All stored claims</returns>
-    public Task<IEnumerable<Claim>> GetAllAsync()
+    public async Task<IEnumerable<Claim>> GetAllAsync()
     {
-        _logger.LogInformation("Retrieving all claims. Count: {Count}", _claims.Count);
-        return Task.FromResult<IEnumerable<Claim>>(_claims.Values.ToList());
+        _logger.LogInformation("Retrieving all claims from database");
+        var claims = await _context.Claims.ToListAsync();
+        _logger.LogInformation("Retrieved {Count} claims from database", claims.Count);
+        return claims;
     }
 
     /// <summary>
-    /// Retrieves a claim by ID from the in-memory store.
+    /// Retrieves a claim by ID from the database.
     /// </summary>
     /// <param name="id">Claim identifier</param>
     /// <returns>Claim if found, null otherwise</returns>
-    public Task<Claim?> GetByIdAsync(Guid id)
+    public async Task<Claim?> GetByIdAsync(Guid id)
     {
-        _claims.TryGetValue(id, out var claim);
+        _logger.LogInformation("Retrieving claim by ID: {ClaimId}", id);
+        var claim = await _context.Claims.FirstOrDefaultAsync(c => c.Id == id);
         
         if (claim == null)
         {
@@ -66,18 +65,23 @@ public class ClaimRepository : IClaimRepository
             _logger.LogInformation("Retrieved claim: {ClaimId}", id);
         }
         
-        return Task.FromResult(claim);
+        return claim;
     }
 
     /// <summary>
-    /// Adds a new claim to the in-memory store.
+    /// Persists a new claim to the database.
     /// </summary>
-    /// <param name="claim">Claim to persist</param>
-    /// <returns>The persisted claim</returns>
-    public Task<Claim> CreateAsync(Claim claim)
+    /// <param name="claim">Claim entity to persist</param>
+    /// <returns>The persisted claim with generated values</returns>
+    public async Task<Claim> CreateAsync(Claim claim)
     {
-        _claims[claim.Id] = claim;
-        _logger.LogInformation("Created claim: {ClaimId} for member: {MemberId}", claim.Id, claim.MemberId);
-        return Task.FromResult(claim);
+        _logger.LogInformation("Creating claim for member: {MemberId} with amount: {Amount}", 
+            claim.MemberId, claim.Amount);
+        
+        _context.Claims.Add(claim);
+        await _context.SaveChangesAsync();
+        
+        _logger.LogInformation("Successfully persisted claim: {ClaimId}", claim.Id);
+        return claim;
     }
 }

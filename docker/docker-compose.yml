@@ -40,6 +40,33 @@ services:
     networks:
       - claimsops-network
 
+  # ---------------------------------------------------------------------------
+  # Claims Service
+  # ---------------------------------------------------------------------------
+  # C# .NET Web API for managing insurance claims.
+  # Built locally from services/claims-service/Dockerfile.
+  # Depends on PostgreSQL for data persistence.
+  # Port: 5115
+  # ---------------------------------------------------------------------------
+  claims-service:
+    build:
+      context: ..
+      dockerfile: services/claims-service/Dockerfile
+    container_name: claimsops-claims-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 5115
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      Cors__AllowedOrigins__0: "http://localhost:3000"
+    ports:
+      - "5115:5115"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - claimsops-network
+    restart: on-failure
+
 # =============================================================================
 # Volumes
 # =============================================================================
