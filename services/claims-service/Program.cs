@@ -8,6 +8,9 @@
 // Port: http://localhost:5115 (configured in Properties/launchSettings.json)
 // =============================================================================
 
+using ClaimsService.Repositories;
+using ClaimsService.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // =============================================================================
@@ -15,6 +18,11 @@ var builder = WebApplication.CreateBuilder(args);
 // =============================================================================
 // Services registered here are available throughout the application via
 // constructor injection. ASP.NET Core automatically resolves dependencies.
+//
+// Lifetime options:
+//   - Singleton: One instance for application lifetime
+//   - Scoped: One instance per HTTP request
+//   - Transient: New instance every time it's requested
 // =============================================================================
 
 // AddControllers: Registers MVC controllers for handling HTTP requests.
@@ -24,6 +32,16 @@ builder.Services.AddControllers();
 // AddOpenApi: Enables OpenAPI/Swagger documentation generation.
 // Available at /openapi/v1.json in development environment.
 builder.Services.AddOpenApi();
+
+// -----------------------------------------------------------------------------
+// Application Services Registration
+// -----------------------------------------------------------------------------
+// Register custom services with their interfaces for dependency injection.
+// Using Scoped lifetime: one instance per HTTP request (recommended for services
+// that depend on request-specific data or DbContext).
+// -----------------------------------------------------------------------------
+builder.Services.AddScoped<IClaimRepository, ClaimRepository>();
+builder.Services.AddScoped<IClaimService, ClaimService>();
 
 // =============================================================================
 // CORS (Cross-Origin Resource Sharing) Configuration

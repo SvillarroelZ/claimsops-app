@@ -19,10 +19,10 @@ openssl rand -base64 24
 
 | Type | Example | Location | Commit? |
 |------|---------|----------|---------|
-| Actual secrets | `POSTGRES_PASSWORD=b+i8CEV+5YQ/...` | `.env` | ❌ NO |
-| Templates | `POSTGRES_PASSWORD=your_generated_secure_password_here` | `.env.example` | ✅ YES |
-| Configuration | `ServiceName`, `Version` | `appsettings.json` | ✅ YES |
-| Dev overrides | Log levels | `appsettings.Development.json` | ✅ YES |
+| Actual secrets | `POSTGRES_PASSWORD=b+i8CEV+5YQ/...` | `.env` | NO |
+| Templates | `POSTGRES_PASSWORD=your_generated_secure_password_here` | `.env.example` | YES |
+| Configuration | `ServiceName`, `Version` | `appsettings.json` | YES |
+| Dev overrides | Log levels | `appsettings.Development.json` | YES |
 
 ### Production Secrets Management
 
