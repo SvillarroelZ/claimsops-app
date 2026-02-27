@@ -9,13 +9,17 @@
 //   - Map Claim entity to ClaimResponse DTO
 //   - Set default values (Id, Status, CreatedAt)
 //   - Log business operations
-//   - (Future) Call audit-service to record events
+//   - Call audit-service to record events
 //
 // Dependencies:
 //   - IClaimRepository: Data access
 //   - ILogger: Logging
+//   - IHttpClientFactory: HTTP calls to audit-service
+//   - IConfiguration: Access to application settings
 // =============================================================================
 
+using System.Text;
+using System.Text.Json;
 using ClaimsService.DTOs;
 using ClaimsService.Models;
 using ClaimsService.Repositories;
@@ -29,16 +33,26 @@ public class ClaimService : IClaimService
 {
     private readonly IClaimRepository _repository;
     private readonly ILogger<ClaimService> _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
 
     /// <summary>
     /// Constructor with dependency injection.
     /// </summary>
     /// <param name="repository">Repository for data access</param>
     /// <param name="logger">Logger for service operations</param>
-    public ClaimService(IClaimRepository repository, ILogger<ClaimService> logger)
+    /// <param name="httpClientFactory">Factory for creating HTTP clients</param>
+    /// <param name="configuration">Application configuration</param>
+    public ClaimService(
+        IClaimRepository repository, 
+        ILogger<ClaimService> logger,
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration)
     {
         _repository = repository;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -93,7 +107,8 @@ public class ClaimService : IClaimService
         
         _logger.LogInformation("Claim created successfully: {ClaimId}", created.Id);
 
-        // TODO: Phase 7 - Call audit-service to record claim creation event
+        // Call audit-service to record claim creation event
+        await RecordAuditEventAsync(created.Id, "created", "system", $"Claim created for member {created.MemberId}");
 
         return MapToResponse(created);
     }
@@ -101,6 +116,58 @@ public class ClaimService : IClaimService
     // =========================================================================
     // Private Helper Methods
     // =========================================================================
+
+    /// <summary>
+    /// Calls audit-service to record an audit event.
+    /// If the call fails, logs a warning but does not throw exception.
+    /// This ensures claim creation succeeds even if audit service is unavailable.
+    /// </summary>
+    /// <param name="claimId">ID of the claim</param>
+    /// <param name="eventType">Type of event (created, updated, etc.)</param>
+    /// <param name="userId">User who triggered the event</param>
+    /// <param name="details">Additional details about the event</param>
+    private async Task RecordAuditEventAsync(Guid claimId, string eventType, string userId, string details)
+    {
+        try
+        {
+            var auditServiceUrl = _configuration["AuditService:BaseUrl"];
+            if (string.IsNullOrEmpty(auditServiceUrl))
+            {
+                _logger.LogWarning("AuditService:BaseUrl not configured. Skipping audit event.");
+                return;
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var auditEvent = new
+            {
+                claim_id = claimId.ToString(),
+                event_type = eventType,
+                user_id = userId,
+                details = details
+            };
+
+            var json = JsonSerializer.Serialize(auditEvent);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            _logger.LogInformation("Sending audit event to {Url}/audit", auditServiceUrl);
+            
+            var response = await client.PostAsync($"{auditServiceUrl}/audit", content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Audit event recorded successfully for claim {ClaimId}", claimId);
+            }
+            else
+            {
+                _logger.LogWarning("Failed to record audit event. Status: {StatusCode}", response.StatusCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log warning but don't throw - audit failures shouldn't break claim creation
+            _logger.LogWarning(ex, "Error calling audit-service for claim {ClaimId}. Continuing without audit.", claimId);
+        }
+    }
 
     /// <summary>
     /// Maps a Claim entity to a ClaimResponse DTO.

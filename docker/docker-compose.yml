@@ -5,12 +5,14 @@
 # All credentials are loaded from .env file (see .env.example for template).
 #
 # Services:
-#   postgres - PostgreSQL 15 database shared by claims-service and audit-service
+#   postgres        - PostgreSQL 15 database for claims-service
+#   claims-service  - C# .NET Web API for managing insurance claims
+#   audit-service   - Python FastAPI microservice for audit events
 #
 # Commands:
 #   Start:  docker-compose up -d
 #   Stop:   docker-compose down
-#   Logs:   docker-compose logs postgres
+#   Logs:   docker-compose logs -f claims-service
 #   Reset:  docker-compose down -v (removes all data)
 # =============================================================================
 
@@ -59,14 +61,43 @@ services:
       ASPNETCORE_HTTP_PORTS: 5115
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
       Cors__AllowedOrigins__0: "http://localhost:3000"
+      AuditService__BaseUrl: "http://audit-service:8000"
     ports:
       - "5115:5115"
     depends_on:
       postgres:
         condition: service_healthy
+      audit-service:
+        condition: service_started
     networks:
       - claimsops-network
     restart: on-failure
+
+  # ---------------------------------------------------------------------------
+  # Audit Service
+  # ---------------------------------------------------------------------------
+  # Python FastAPI microservice for recording audit events.
+  # Stores events in memory (no persistence for MVP).
+  # Called by claims-service when claims are created/updated.
+  # Port: 8000
+  # ---------------------------------------------------------------------------
+  audit-service:
+    build:
+      context: ..
+      dockerfile: services/audit-service/Dockerfile
+    container_name: claimsops-audit-service
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "8000:8000"
+    networks:
+      - claimsops-network
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 # =============================================================================
 # Volumes

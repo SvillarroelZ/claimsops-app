@@ -35,6 +35,11 @@ builder.Services.AddControllers();
 // Available at /openapi/v1.json in development environment.
 builder.Services.AddOpenApi();
 
+// AddHttpClient: Registers IHttpClientFactory for making HTTP calls.
+// Used by ClaimService to call audit-service.
+// Provides HttpClient instances with proper lifecycle management.
+builder.Services.AddHttpClient();
+
 // RegisterDatabase context with PostgreSQL connection string
 // Connection string is read from appsettings.json
 // DefaultConnection property contains database configuration

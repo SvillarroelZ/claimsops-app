@@ -1,0 +1,11 @@
+# =============================================================================
+# Python Dependencies for Audit Service
+# =============================================================================
+# FastAPI - Modern Python web framework for building APIs
+# Uvicorn - ASGI server for running FastAPI applications
+# Pydantic - Data validation using Python type annotations
+# =============================================================================
+
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.0
