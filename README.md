@@ -2,8 +2,31 @@
 
 Enterprise-grade insurance claims management system built with microservices architecture.
 
-**Status:** MVP Complete ✅  
+**Status:** MVP Complete  
 **Version:** 1.0.0
+
+## System Diagram
+
+```mermaid
+flowchart LR
+    Client[Client / API Consumer] --> Claims[Claims Service (.NET)]
+    Claims --> Db[(PostgreSQL)]
+    Claims -- HTTP POST /audit --> Audit[Audit Service (FastAPI)]
+```
+
+## Documentation Strategy
+
+The project uses one main README plus focused documents to keep information clear.
+
+- `README.md`: Quick overview, setup, architecture summary, and links.
+- `docs/runbook.md`: Full technical guide and operations details.
+- `docs/code-walkthrough.md`: Step-by-step request flow.
+- `docs/architecture.md`: Architecture summary and future improvements.
+- `docs/security.md`: Security guidelines and checklist.
+- `docker/README.md`: Docker-specific usage only.
+- `services/claims-service/README.md`: Service-specific details only.
+
+This split avoids one very large file and makes each document easier to maintain.
 
 ## Quick Start
 
@@ -260,11 +283,11 @@ docker-compose up -d --build claims-service
 
 ## Documentation
 
-- **📘 [Complete Technical Runbook](docs/runbook.md)** - In-depth guide with technology explanations
-- **🧭 [Code Walkthrough](docs/code-walkthrough.md)** - Step-by-step flow for `POST /api/claims`
-- **🏗️ [Architecture Summary](docs/architecture.md)** - System overview and future improvements
-- **🔒 [Security Documentation](docs/security.md)** - Security considerations
-- **🐳 [Docker Guide](docker/README.md)** - Container orchestration details
+- **[Complete Technical Runbook](docs/runbook.md)** - In-depth guide with technology explanations
+- **[Code Walkthrough](docs/code-walkthrough.md)** - Step-by-step flow for `POST /api/claims`
+- **[Architecture Summary](docs/architecture.md)** - System overview and future improvements
+- **[Security Documentation](docs/security.md)** - Security considerations
+- **[Docker Guide](docker/README.md)** - Container orchestration details
 
 ## Related Repositories
 
@@ -323,7 +346,7 @@ CLAIM_ID=$(echo $CLAIM | jq -r '.id')
 echo "\nVerifying audit event..."
 curl -s "http://localhost:8000/audit?claim_id=$CLAIM_ID" | jq .
 
-echo "\n✅ MVP Test Complete"
+echo "\nMVP test complete"
 ```
 
 ## Troubleshooting
@@ -386,7 +409,7 @@ See [docs/runbook.md](docs/runbook.md#technology-stack-overview) for full ration
 
 ## Roadmap
 
-### Phase 1: MVP ✅ (Completed)
+### Phase 1: MVP (Completed)
 - [x] Claims CRUD API with PostgreSQL persistence
 - [x] Audit service with in-memory storage
 - [x] Docker Compose orchestration

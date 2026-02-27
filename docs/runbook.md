@@ -4,6 +4,15 @@
 **Last Updated:** February 27, 2026  
 **Environment:** Development (MVP)
 
+## System Flow Diagram
+
+```mermaid
+flowchart LR
+    Client[Client / API Consumer] --> Claims[Claims Service (.NET)]
+    Claims --> Db[(PostgreSQL)]
+    Claims -- HTTP POST /audit --> Audit[Audit Service (FastAPI)]
+```
+
 ---
 
 ## Table of Contents
