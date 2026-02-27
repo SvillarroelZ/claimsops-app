@@ -35,6 +35,10 @@ namespace ClaimsService.Controllers;
 [Route("api/[controller]")]  // Route: /api/claims
 public class ClaimsController : ControllerBase
 {
+    // Purpose: Handle HTTP requests for claim operations.
+    // Input: HTTP request body/route data mapped to DTOs and IDs.
+    // Output: HTTP responses (201/200/404/400) with JSON payloads.
+    // Why this exists: Keep transport concerns in controller and delegate business logic to service layer.
     private readonly IClaimService _claimService;
     private readonly ILogger<ClaimsController> _logger;
 
@@ -64,6 +68,10 @@ public class ClaimsController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ClaimResponse>> CreateClaim([FromBody] CreateClaimRequest request)
     {
+        // Purpose: Create a new claim from API input.
+        // Input: CreateClaimRequest with memberId, amount, and currency.
+        // Output: 201 Created + ClaimResponse + Location header.
+        // Why this exists: Provide a REST endpoint for claim creation while keeping flow explicit and testable.
         // Model validation is handled automatically by ASP.NET Core
         // If validation fails, a 400 BadRequest is returned with validation errors
 

@@ -95,6 +95,8 @@ claimsops-app/
 │
 ├── docs/
 │   ├── runbook.md             # Complete technical guide
+│   ├── code-walkthrough.md    # Step-by-step request flow explanation
+│   ├── architecture.md        # Architecture summary and future improvements
 │   └── security.md            # Security documentation
 │
 ├── .env.example               # Environment template
@@ -259,8 +261,14 @@ docker-compose up -d --build claims-service
 ## Documentation
 
 - **📘 [Complete Technical Runbook](docs/runbook.md)** - In-depth guide with technology explanations
+- **🧭 [Code Walkthrough](docs/code-walkthrough.md)** - Step-by-step flow for `POST /api/claims`
+- **🏗️ [Architecture Summary](docs/architecture.md)** - System overview and future improvements
 - **🔒 [Security Documentation](docs/security.md)** - Security considerations
 - **🐳 [Docker Guide](docker/README.md)** - Container orchestration details
+
+## Related Repositories
+
+- **Infrastructure repository:** [claimsops-platform](https://github.com/SvillarroelZ/claimsops-platform)
 
 ## Common Commands
 

@@ -31,6 +31,10 @@ namespace ClaimsService.Services;
 /// </summary>
 public class ClaimService : IClaimService
 {
+    // Purpose: Execute claim business logic and orchestrate persistence + audit integration.
+    // Input: Claim requests from controller and IDs for read operations.
+    // Output: ClaimResponse DTOs and side-effect call to audit-service.
+    // Why this exists: Centralize domain flow so controller and repository stay simple and focused.
     private readonly IClaimRepository _repository;
     private readonly ILogger<ClaimService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -88,6 +92,10 @@ public class ClaimService : IClaimService
     /// <returns>Created claim as response DTO</returns>
     public async Task<ClaimResponse> CreateClaimAsync(CreateClaimRequest request)
     {
+        // Purpose: Create and persist a claim, then emit an audit event.
+        // Input: CreateClaimRequest from API layer.
+        // Output: ClaimResponse representing the persisted claim.
+        // Why this exists: This is the main use case path for POST /api/claims.
         _logger.LogInformation("Creating claim for member: {MemberId}, amount: {Amount} {Currency}", 
             request.MemberId, request.Amount, request.Currency);
 
@@ -128,6 +136,10 @@ public class ClaimService : IClaimService
     /// <param name="details">Additional details about the event</param>
     private async Task RecordAuditEventAsync(Guid claimId, string eventType, string userId, string details)
     {
+        // Purpose: Send a claim-related audit event to audit-service.
+        // Input: Claim ID + event metadata (event type, user, details).
+        // Output: HTTP POST call to /audit with logging for success/failure.
+        // Why this exists: Keep an auditable trace without coupling claim creation to audit availability.
         try
         {
             var auditServiceUrl = _configuration["AuditService:BaseUrl"];
