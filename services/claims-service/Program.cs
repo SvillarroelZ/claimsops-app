@@ -77,6 +77,28 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // =============================================================================
+// Apply Database Migrations
+// =============================================================================
+// Automatically apply any pending EF Core migrations at application startup.
+// This ensures the database schema is always up-to-date with the current code.
+// Uses scoped service to get ClaimsDbContext instance.
+// =============================================================================
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ClaimsDbContext>();
+    try
+    {
+        dbContext.Database.Migrate();
+        app.Logger.LogInformation("Database migrations applied successfully");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Error applying database migrations");
+        // Continue startup even if migrations fail - in production, you might want to fail
+    }
+}
+
+// =============================================================================
 // HTTP Request Pipeline (Middleware)
 // =============================================================================
 // Middleware processes HTTP requests in order. Each middleware can:
