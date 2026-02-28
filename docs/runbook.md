@@ -324,14 +324,97 @@ jq --version
 
 ## Local Setup & Installation
 
-### Step 1: Clone the Repository
+### Environment Options
+
+This project can be run in two environments:
+
+1. **GitHub Codespaces** (Recommended for quick start)
+   - Pre-configured dev container
+   - No local setup required
+   - Automatic port forwarding
+   - See [Codespaces Setup](#codespaces-setup) below
+
+2. **Local Machine** (For traditional development)
+   - Requires Docker Desktop
+   - Full control over environment
+   - See [Local Setup](#local-machine-setup) below
+
+---
+
+### Codespaces Setup
+
+**Step 1: Open in Codespaces**
+- Click "Code" → "Codespaces" → "Create codespace on main"
+- Wait for container to build (happens automatically)
+
+**Step 2: Start Services**
+```bash
+cd docker
+docker-compose up -d --build
+```
+
+**Step 3: Make Ports Public**
+
+GitHub Codespaces ports are private by default. To access services in your browser:
+
+1. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+2. Type: "Ports: Focus on Ports View"
+3. Press Enter
+4. In the Ports panel, find ports **8000** and **5115**
+5. Right-click each port → **Port Visibility** → **Public**
+
+**Step 4: Access Services**
+
+Get your Codespace name by running:
+```bash
+echo $CODESPACE_NAME
+```
+
+Then access services in your browser (replace `YOUR-CODESPACE-NAME`):
+
+| Service | URL |
+|---------|-----|
+| **Swagger UI (Interactive)** | `https://YOUR-CODESPACE-NAME-8000.app.github.dev/docs` |
+| **Claims API** | `https://YOUR-CODESPACE-NAME-5115.app.github.dev/api/claims` |
+| **Health Check** | `https://YOUR-CODESPACE-NAME-5115.app.github.dev/health` |
+| **Audit API** | `https://YOUR-CODESPACE-NAME-8000.app.github.dev/audit` |
+
+**Alternative: Use Terminal Commands**
+
+These work immediately without port configuration:
+```bash
+# Verify health
+curl http://localhost:5115/health | jq .
+curl http://localhost:8000/health | jq .
+
+# Create test claim
+curl -X POST http://localhost:5115/api/claims \
+  -H "Content-Type: application/json" \
+  -d '{
+    "memberId": "MBR-TEST",
+    "amount": 100.00,
+    "currency": "USD"
+  }' | jq .
+
+# List all claims
+curl http://localhost:5115/api/claims | jq .
+
+# View audit events
+curl http://localhost:8000/audit | jq .
+```
+
+---
+
+### Local Machine Setup
+
+**Step 1: Clone the Repository**
 
 ```bash
 git clone https://github.com/SvillarroelZ/claimsops-app.git
 cd claimsops-app
 ```
 
-### Step 2: Create Environment Configuration
+**Step 2: Create Environment Configuration**
 
 ```bash
 # Copy the example environment file
@@ -379,6 +462,20 @@ docker-compose up -d --build
 docker-compose ps
 
 # Expected output shows all services "Up" or "Up (healthy)"
+```
+
+**Access Services:**
+
+Open in your browser:
+- **Swagger UI (Interactive API):** http://localhost:8000/docs
+- **Claims API:** http://localhost:5115/api/claims
+- **Health Check:** http://localhost:5115/health
+
+Or test with curl:
+```bash
+curl http://localhost:5115/health | jq .
+curl http://localhost:8000/health | jq .
+curl http://localhost:5115/api/claims | jq .
 ```
 
 ### Step 5: View Logs (Optional)
