@@ -2,10 +2,50 @@
 
 Enterprise-grade insurance claims management system built with microservices architecture.
 
-**Status:** MVP Complete ✅  
+**Status:** MVP Complete  
 **Version:** 1.0.0
 
 ## Quick Start
+
+### Option 1: GitHub Codespaces (Recommended)
+
+1. Open this repository in Codespaces
+2. Wait for container to build (automatic)
+3. Start services:
+   ```bash
+   cd docker
+   docker-compose up -d --build
+   ```
+
+4. **Make ports public** (required for browser access):
+   - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+   - Type: "Ports: Focus on Ports View"
+   - Press Enter
+   - Right-click on port **8000** → Port Visibility → **Public**
+   - Right-click on port **5115** → Port Visibility → **Public**
+
+5. **Access services in your browser**:
+   - Replace `YOUR-CODESPACE-NAME` with your actual Codespace name (visible in the URL or run `echo $CODESPACE_NAME`)
+   - **Swagger UI (Interactive API):** `https://YOUR-CODESPACE-NAME-8000.app.github.dev/docs`
+   - **Claims API:** `https://YOUR-CODESPACE-NAME-5115.app.github.dev/api/claims`
+   - **Health Check:** `https://YOUR-CODESPACE-NAME-5115.app.github.dev/health`
+
+6. **From the terminal** (always works):
+   ```bash
+   # Verify services
+   curl http://localhost:5115/health | jq .
+   curl http://localhost:8000/health | jq .
+   
+   # Create test claim
+   curl -X POST http://localhost:5115/api/claims \
+     -H "Content-Type: application/json" \
+     -d '{"memberId":"MBR-001","amount":250.50,"currency":"USD"}' | jq .
+   
+   # List claims
+   curl http://localhost:5115/api/claims | jq .
+   ```
+
+### Option 2: Local Development
 
 ```bash
 # Clone repository
@@ -27,6 +67,9 @@ curl http://localhost:8000/health  # Audit Service
 curl -X POST http://localhost:5115/api/claims \
   -H "Content-Type: application/json" \
   -d '{"memberId":"MBR-001","amount":250.50,"currency":"USD"}'
+
+# Access Swagger UI
+open http://localhost:8000/docs  # Or visit in browser
 ```
 
 ## Architecture
