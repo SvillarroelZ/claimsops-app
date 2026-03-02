@@ -1,6 +1,6 @@
 # ClaimsOps Application
 
-[**English**](#) | [**Español**](README.es.md)
+[**English**](#README.md) | [**Español**](README.es.md)
 
 Enterprise-grade insurance claims management system built with microservices architecture.
 
@@ -474,78 +474,9 @@ MIT License - See LICENSE file for details
 ## Support
 
 - **Documentation:** [docs/runbook.md](docs/runbook.md)
-- **Issues:** https://github.com/SvillarroelZ/claimsops-app/issues
+- **Issues:** [GitHub Issues](https://github.com/SvillarroelZ/claimsops-app/issues)
 - **Contact:** Engineering Team
 
 ---
 
 **Built with ❤️ as a complete MVP for enterprise insurance claims management**
-
-5. **Verify health**
-   ```bash
-   curl http://localhost:5115/health
-   ```
-
-## Development
-
-See individual service READMEs:
-- [Claims Service](services/claims-service/README.md)
-- [Docker Setup](docker/README.md)
-
-## Documentation
-
-- [Architecture Overview](docs/architecture.md)
-- [Security Guidelines](docs/security.md)
-
-## API Endpoints
-
-### Claims Service
-
-- `GET /health` - Health check
-
-(More endpoints will be added in subsequent phases)
-
-## Testing
-
-```bash
-# .NET tests
-cd services/claims-service
-dotnet test
-
-# Python tests
-cd services/audit-service
-pytest
-
-# Frontend tests
-cd frontend
-npm test
-```
-
-## Security
-
-**Important:** Never commit `.env` files or secrets to version control.
-
-See [Security Guidelines](docs/security.md) for details.
-
-## Contributing
-
-1. Create a feature branch from `main`
-2. Make your changes
-3. Ensure tests pass
-4. Commit with conventional commits format
-5. Push and create a Pull Request
-
-### Commit Convention
-
-```
-feat: add new feature
-fix: bug fix
-chore: maintenance tasks
-docs: documentation updates
-refactor: code restructuring
-test: add or update tests
-```
-
-## License
-
-MIT License - See LICENSE file for details
