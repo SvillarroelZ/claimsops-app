@@ -1,5 +1,7 @@
 # ClaimsOps Application
 
+[**English**](#) | [**Español**](README.es.md)
+
 Enterprise-grade insurance claims management system built with microservices architecture.
 
 **Status:** MVP Complete  
@@ -10,11 +12,15 @@ Enterprise-grade insurance claims management system built with microservices arc
 ### Option 1: GitHub Codespaces (Recommended)
 
 1. Open this repository in Codespaces
-2. Wait for container to build (automatic)
-3. Start services:
+2. In the terminal, set up environment variables:
    ```bash
    cd docker
-   docker-compose up -d --build
+   cp .env.example .env
+   ```
+
+3. Start all services:
+   ```bash
+   docker compose -f docker-compose.yml up -d --build
    ```
 
 4. **Make ports public** (required for browser access):
@@ -25,14 +31,15 @@ Enterprise-grade insurance claims management system built with microservices arc
    - Right-click on port **5115** → Port Visibility → **Public**
 
 5. **Access services in your browser**:
-   - Replace `YOUR-CODESPACE-NAME` with your actual Codespace name (visible in the URL or run `echo $CODESPACE_NAME`)
+   - Get your Codespace name: run `echo $CODESPACE_NAME`
+   - Replace `YOUR-CODESPACE-NAME` with the actual name
    - **Swagger UI (Interactive API):** `https://YOUR-CODESPACE-NAME-8000.app.github.dev/docs`
    - **Claims API:** `https://YOUR-CODESPACE-NAME-5115.app.github.dev/api/claims`
    - **Health Check:** `https://YOUR-CODESPACE-NAME-5115.app.github.dev/health`
 
 6. **From the terminal** (always works):
    ```bash
-   # Verify services
+   # Verify services are running
    curl http://localhost:5115/health | jq .
    curl http://localhost:8000/health | jq .
    
@@ -41,35 +48,36 @@ Enterprise-grade insurance claims management system built with microservices arc
      -H "Content-Type: application/json" \
      -d '{"memberId":"MBR-001","amount":250.50,"currency":"USD"}' | jq .
    
-   # List claims
+   # List all claims
    curl http://localhost:5115/api/claims | jq .
    ```
 
-### Option 2: Local Development
+### Option 2: Local Development (Mac / Linux)
 
 ```bash
 # Clone repository
 git clone https://github.com/SvillarroelZ/claimsops-app.git
 cd claimsops-app
 
-# Configure environment
+# Configure environment (IMPORTANT: creates .env in docker/ folder)
+cd docker
 cp .env.example .env
 
 # Start all services
-cd docker
-docker-compose up -d
+docker compose -f docker-compose.yml up -d --build
 
 # Verify services are running
-curl http://localhost:5115/health  # Claims Service
-curl http://localhost:8000/health  # Audit Service
+sleep 10
+curl http://localhost:5115/health | jq .
+curl http://localhost:8000/health | jq .
 
 # Create a test claim
 curl -X POST http://localhost:5115/api/claims \
   -H "Content-Type: application/json" \
-  -d '{"memberId":"MBR-001","amount":250.50,"currency":"USD"}'
+  -d '{"memberId":"MBR-001","amount":250.50,"currency":"USD"}' | jq .
 
-# Access Swagger UI
-open http://localhost:8000/docs  # Or visit in browser
+# View Swagger documentation
+# Open browser to: http://localhost:8000/docs
 ```
 
 ## Architecture
@@ -176,18 +184,23 @@ claimsops-app/
 
 ### Installation & Setup
 
-**1. Clone and Configure**
+**1. Clone and Configure** (your local machine or Codespace)
 
 ```bash
 git clone https://github.com/SvillarroelZ/claimsops-app.git
 cd claimsops-app
+cd docker
 cp .env.example .env
+# ⚠️  IMPORTANT: .env must be in docker/ folder, not in repository root
 ```
 
-**2. Start Services**
+**2. Start All Services** (from docker/ folder)
 
 ```bash
-cd docker
+# Modern syntax (recommended)
+docker compose -f docker-compose.yml up -d --build
+
+# OR old syntax (still works)
 docker-compose up -d --build
 ```
 
@@ -197,17 +210,17 @@ docker-compose up -d --build
 # Wait 10 seconds for services to start
 sleep 10
 
-# Check claims-service
+# Check claims-service health
 curl http://localhost:5115/health | jq .
 
-# Check audit-service
+# Check audit-service health
 curl http://localhost:8000/health | jq .
 ```
 
-**4. Test Complete Flow**
+**4. Test Complete Flow** (Create → Audit → List)
 
 ```bash
-# Create a claim (persists to PostgreSQL + calls audit-service)
+# Create a claim (persists to PostgreSQL + triggers audit event)
 curl -X POST http://localhost:5115/api/claims \
   -H "Content-Type: application/json" \
   -d '{
@@ -216,24 +229,25 @@ curl -X POST http://localhost:5115/api/claims \
     "currency": "USD"
   }' | jq .
 
-# List all claims
+# List all claims from database
 curl http://localhost:5115/api/claims | jq .
 
-# View audit events
+# View audit events recorded by audit-service
 curl http://localhost:8000/audit | jq .
 ```
 
-### Stopping Services
+**5. Stopping Services**
 
 ```bash
-# Stop without removing data
-docker-compose stop
+# Stop services (keep data)
+cd docker
+docker compose -f docker-compose.yml stop
 
 # Stop and remove containers (data persists in volumes)
-docker-compose down
+docker compose -f docker-compose.yml down
 
-# Full reset (removes all data)
-docker-compose down -v
+# Full reset (removes all data and volumes)
+docker compose -f docker-compose.yml down -v
 ```
 
 ## Development Workflow
@@ -308,28 +322,28 @@ docker-compose up -d --build claims-service
 ## Common Commands
 
 ```bash
-# Docker Compose
-docker-compose up -d              # Start all services
-docker-compose logs -f            # View all logs
-docker-compose logs -f claims-service  # View specific service logs
-docker-compose ps                 # Check service status
-docker-compose restart claims-service  # Restart service
-docker-compose down -v            # Full reset
+# Docker Compose (modern syntax - recommended)
+docker compose -f docker/docker-compose.yml up -d              # Start all services
+docker compose -f docker/docker-compose.yml logs -f            # View all logs
+docker compose -f docker/docker-compose.yml logs -f claims-service  # View specific service
+docker compose -f docker/docker-compose.yml ps                 # Check service status
+docker compose -f docker/docker-compose.yml restart claims-service  # Restart service
+docker compose -f docker/docker-compose.yml down -v            # Full reset
 
-# .NET Commands
+# .NET Commands (from services/claims-service/)
 dotnet build                      # Compile project
 dotnet run                        # Run locally
 dotnet ef migrations add Name     # Create migration
 dotnet ef database update         # Apply migrations
 dotnet add package PackageName    # Install NuGet package
 
-# Python Commands
+# Python Commands (from services/audit-service/)
 pip install -r requirements.txt   # Install dependencies
 uvicorn main:app --reload         # Run with auto-reload
-pip freeze > requirements.txt     # Update dependencies
+pip freeze > requirements.txt     # Update dependencies list
 
-# Database Access
-docker exec -it claimsops-postgres psql -U postgres -d claimsdb
+# Database Access (from any folder)
+docker exec -it claimsops-postgres psql -U claimsops_user -d claimsops_db
 ```
 
 ## Testing
@@ -466,37 +480,6 @@ MIT License - See LICENSE file for details
 ---
 
 **Built with ❤️ as a complete MVP for enterprise insurance claims management**
-
-- [Node.js 20+](https://nodejs.org/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
-
-### Quick Start
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/SvillarroelZ/claimsops-app.git
-   cd claimsops-app
-   ```
-
-2. **Setup environment variables**
-   ```bash
-   cd docker
-   cp .env.example .env
-   # Edit .env and set POSTGRES_PASSWORD (see security.md)
-   ```
-
-3. **Start PostgreSQL**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Run Claims Service**
-   ```bash
-   cd ../services/claims-service
-   dotnet restore
-   dotnet run
-   # Service runs on http://localhost:5115
-   ```
 
 5. **Verify health**
    ```bash
