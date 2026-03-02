@@ -51,18 +51,18 @@ print_test() {
 }
 
 print_success() {
-    echo -e "${GREEN}✓ PASS: $1${NC}"
+    echo -e "${GREEN}[PASS] $1${NC}"
     TESTS_PASSED=$((TESTS_PASSED + 1))
 }
 
 print_failure() {
-    echo -e "${RED}✗ FAIL: $1${NC}"
+    echo -e "${RED}[FAIL] $1${NC}"
     echo -e "${RED}  Error: $2${NC}"
     TESTS_FAILED=$((TESTS_FAILED + 1))
 }
 
 print_info() {
-    echo -e "${BLUE}ℹ $1${NC}"
+    echo -e "${BLUE}[INFO] $1${NC}"
 }
 
 print_summary() {
@@ -80,10 +80,10 @@ print_summary() {
     echo ""
     
     if [ $TESTS_FAILED -eq 0 ]; then
-        echo -e "${GREEN}✓ All tests passed!${NC}"
+        echo -e "${GREEN}[SUCCESS] All tests passed!${NC}"
         return 0
     else
-        echo -e "${RED}✗ Some tests failed.${NC}"
+        echo -e "${RED}[ERROR] Some tests failed.${NC}"
         return 1
     fi
 }
@@ -169,7 +169,7 @@ if ! curl -s --max-time 5 "$AUDIT_SERVICE_URL/health" > /dev/null 2>&1; then
 fi
 print_info "Audit service is reachable"
 
-echo -e "${GREEN}✓ All pre-flight checks passed${NC}"
+echo -e "${GREEN}[OK] All pre-flight checks passed${NC}"
 
 # =============================================================================
 # Test Suite 1: Health Checks
