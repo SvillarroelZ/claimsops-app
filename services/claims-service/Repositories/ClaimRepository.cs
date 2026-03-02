@@ -20,6 +20,10 @@ namespace ClaimsService.Repositories;
 /// </summary>
 public class ClaimRepository : IClaimRepository
 {
+    // Purpose: Persist and retrieve Claim entities from PostgreSQL via EF Core.
+    // Input: Domain entities and identifiers from service layer.
+    // Output: Materialized Claim entities from database operations.
+    // Why this exists: Isolate data access details from business logic for cleaner architecture.
     private readonly ClaimsDbContext _context;
     private readonly ILogger<ClaimRepository> _logger;
 
@@ -75,6 +79,10 @@ public class ClaimRepository : IClaimRepository
     /// <returns>The persisted claim with generated values</returns>
     public async Task<Claim> CreateAsync(Claim claim)
     {
+        // Purpose: Insert a new claim row in the Claims table.
+        // Input: Fully populated Claim entity.
+        // Output: Persisted Claim entity after SaveChangesAsync.
+        // Why this exists: Provide the create operation used by ClaimService.CreateClaimAsync.
         _logger.LogInformation("Creating claim for member: {MemberId} with amount: {Amount}", 
             claim.MemberId, claim.Amount);
         

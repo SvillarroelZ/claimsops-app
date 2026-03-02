@@ -9,6 +9,10 @@ namespace ClaimsService.Data;
 /// </summary>
 public class ClaimsDbContext : DbContext
 {
+    // Purpose: Define EF Core mapping between Claim model and PostgreSQL schema.
+    // Input: DbContextOptions configuration and Claim entities.
+    // Output: Database context operations and model configuration metadata.
+    // Why this exists: Central place to configure tables, constraints, and column behavior.
     /// <summary>
     /// Constructor for dependency injection of DbContextOptions.
     /// </summary>
@@ -28,6 +32,10 @@ public class ClaimsDbContext : DbContext
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Purpose: Configure entity-to-table rules for Claim persistence.
+        // Input: ModelBuilder provided by EF Core.
+        // Output: Mapping rules (keys, precision, defaults, constraints).
+        // Why this exists: Ensure DB schema matches domain requirements consistently.
         base.OnModelCreating(modelBuilder);
 
         // Configure Claims table
