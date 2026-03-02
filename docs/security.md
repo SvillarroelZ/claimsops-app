@@ -8,20 +8,20 @@
 
 | File | Location | Purpose | Commit? |
 |------|----------|---------|---------|
-| `.env` | `docker/` folder | Contains actual secrets | **NO** ❌ |
-| `.env.example` | `docker/` folder | Template with safe placeholders | **YES** ✅ |
-| `.gitignore` | Repository root | Lists files to exclude from git | **YES** ✅ |
+| `.env` | `docker/` folder | Contains actual secrets | **NO** |
+| `.env.example` | `docker/` folder | Template with safe placeholders | **YES** |
+| `.gitignore` | Repository root | Lists files to exclude from git | **YES** |
 
 **Important:** The `.env` file must be located in the `docker/` folder (not in repository root).
 
 ```bash
-# Correct ✅
+# Correct
 docker/
   ├── .env           (NEVER commit)
   ├── .env.example   (commit this)
   └── docker-compose.yml
 
-# Wrong ❌
+# Wrong
 .env               (at root - please don't do this)
 ```
 
@@ -48,11 +48,11 @@ Then copy to `docker/.env` (not to version control).
 
 | Type | Example | Location | Commit? | Why? |
 |------|---------|----------|---------|------|
-| Actual secrets | `POSTGRES_PASSWORD=b+i8CEV+...` | `docker/.env` | ❌ NO | Security risk |
-| Placeholders | `POSTGRES_PASSWORD=generate_secure_value_here` | `docker/.env.example` | ✅ YES | Template for setup |
-| Configuration | Port numbers, service names | `appsettings.json` | ✅ YES | Non-sensitive |
-| Dev overrides | Log levels, debug flags | `appsettings.Development.json` | ✅ YES | Dev-only settings |
-| Paths & routes | API endpoints, folders | Code and docs | ✅ YES | Non-sensitive |
+| Actual secrets | `POSTGRES_PASSWORD=b+i8CEV+...` | `docker/.env` | NO | Security risk |
+| Placeholders | `POSTGRES_PASSWORD=generate_secure_value_here` | `docker/.env.example` | YES | Template for setup |
+| Configuration | Port numbers, service names | `appsettings.json` | YES | Non-sensitive |
+| Dev overrides | Log levels, debug flags | `appsettings.Development.json` | YES | Development-only settings |
+| Paths & routes | API endpoints, folders | Code and docs | YES | Non-sensitive |
 
 ### Production Secrets Management
 
