@@ -5,35 +5,69 @@
 ### Local Development
 
 **Critical Files:**
-- `.env` - Contains actual secrets. **NEVER commit this file.**
-- `.env.example` - Template with placeholder values. Safe to commit.
+
+| File | Location | Purpose | Commit? |
+|------|----------|---------|---------|
+| `.env` | `docker/` folder | Contains actual secrets | **NO** ❌ |
+| `.env.example` | `docker/` folder | Template with safe placeholders | **YES** ✅ |
+| `.gitignore` | Repository root | Lists files to exclude from git | **YES** ✅ |
+
+**Important:** The `.env` file must be located in the `docker/` folder (not in repository root).
+
+```bash
+# Correct ✅
+docker/
+  ├── .env           (NEVER commit)
+  ├── .env.example   (commit this)
+  └── docker-compose.yml
+
+# Wrong ❌
+.env               (at root - please don't do this)
+```
+
+**Verification that .env is ignored:**
+```bash
+# Check that .env is in .gitignore
+grep "\.env" .gitignore
+
+# Verify .env is not staged
+git status | grep "\.env"  # Should show nothing
+```
 
 ### Password Generation
 
 For local development, generate secure passwords using:
 ```bash
 openssl rand -base64 24
+# Output: b+i8CEV+5YQ/1fdo4BwoSBKxY6Z8m7pl
 ```
+
+Then copy to `docker/.env` (not to version control).
 
 ### What Goes Where
 
-| Type | Example | Location | Commit? |
-|------|---------|----------|---------|
-| Actual secrets | `POSTGRES_PASSWORD=b+i8CEV+5YQ/...` | `.env` | NO |
-| Templates | `POSTGRES_PASSWORD=your_generated_secure_password_here` | `.env.example` | YES |
-| Configuration | `ServiceName`, `Version` | `appsettings.json` | YES |
-| Dev overrides | Log levels | `appsettings.Development.json` | YES |
+| Type | Example | Location | Commit? | Why? |
+|------|---------|----------|---------|------|
+| Actual secrets | `POSTGRES_PASSWORD=b+i8CEV+...` | `docker/.env` | ❌ NO | Security risk |
+| Placeholders | `POSTGRES_PASSWORD=generate_secure_value_here` | `docker/.env.example` | ✅ YES | Template for setup |
+| Configuration | Port numbers, service names | `appsettings.json` | ✅ YES | Non-sensitive |
+| Dev overrides | Log levels, debug flags | `appsettings.Development.json` | ✅ YES | Dev-only settings |
+| Paths & routes | API endpoints, folders | Code and docs | ✅ YES | Non-sensitive |
 
 ### Production Secrets Management
 
-For production environments, use proper secrets management:
-- **AWS**: AWS Secrets Manager or Parameter Store
-- **Azure**: Azure Key Vault
-- **GCP**: Google Secret Manager
-- **Docker**: Docker Secrets
-- **Kubernetes**: Kubernetes Secrets
+For production environments, use proper secrets management systems:
 
-**Never** hardcode production credentials in any file.
+| Platform | Service | Example |
+|----------|---------|---------|
+| **AWS** | AWS Secrets Manager | `arn:aws:secretsmanager:region:account:secret:name` |
+| **Azure** | Azure Key Vault | `https://vault.azure.net/secrets/name` |
+| **GCP** | Google Secret Manager | `projects/{id}/secrets/{name}` |
+| **Docker** | Docker Secrets | Swarm mode only |
+| **Kubernetes** | Kubernetes Secrets | ConfigMap + Secret |
+| **GitHub** | GitHub Secrets | `${{ secrets.DB_PASSWORD }}` in Actions |
+
+**Rule:** Never commit or hardcode production credentials in any file. Use environment-specific secrets management.
 
 ## API Security
 
@@ -105,26 +139,71 @@ Use structured logging with log levels:
 - `Information`: Normal operations
 - `Debug`: Detailed flow (dev only)
 
-## Dependencies
-
-Regular security audits:
-```bash
-# .NET
-dotnet list package --vulnerable
-
-# Python
-pip-audit
-
-# Node.js
-npm audit
-```
-
 ## Checklist Before Commit
 
-- [ ] No `.env` files in staged changes
-- [ ] No hardcoded passwords or API keys
-- [ ] `.env.example` has placeholder values only
-- [ ] Configuration uses environment variables
-- [ ] No sensitive data in logs
-- [ ] CORS origins are explicitly defined
-- [ ] Error messages don't leak internal details
+Before pushing code, verify:
+
+```bash
+# 1. No .env files staged
+git status | grep "\.env$"
+
+# 2. No hardcoded secrets in code
+grep -r "password\|secret\|key\|token" services/ --exclude-dir=bin --exclude-dir=obj --exclude-dir=__pycache__
+
+# 3. .env.example has only placeholders
+grep "=\$\|=your_\|=replace_\|=generate_" docker/.env.example
+
+# 4. Check .gitignore includes .env
+cat .gitignore | grep "\.env"
+```
+
+**Checklist:**
+
+- [ ] No `.env` files in staged changes (`git status` is clean)
+- [ ] No hardcoded passwords, API keys, or secrets in source code
+- [ ] `.env.example` has placeholder values only (no real secrets)
+- [ ] Configuration uses environment variables (not hardcoded)
+- [ ] No sensitive data in logs (passwords, SSN, credit cards, PII)
+- [ ] CORS origins are explicitly configured
+- [ ] Error messages don't leak internal system details
+- [ ] `.gitignore` includes `.env`, `.env.local`, etc.
+- [ ] All dependencies are up to date and pass security audits
+
+## Verification Commands
+
+### Check for committed secrets in history
+
+```bash
+# Search git history for common secret patterns
+git log -S "password" --all --source --pretty=oneline
+git log -S "secret" --all --source --pretty=oneline
+git log -S "key" --all --source --pretty=oneline
+```
+
+### Verify .env is in .gitignore
+
+```bash
+cat .gitignore | grep -E "^\\.env"
+```
+
+Expected output:
+```
+.env
+.env.local
+.env.*.local
+```
+
+### Run dependency audits
+
+```bash
+# .NET packages
+cd services/claims-service
+dotnet list package --vulnerable
+
+# Python packages
+cd ../audit-service
+pip-audit
+
+# Check for known CVEs
+# Use: https://nvd.nist.gov/ or https://www.cvedetails.com/
+```
