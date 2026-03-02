@@ -7,7 +7,7 @@
 
 ## ESTRUCTURA DEL PROYECTO
 
-```
+```text
 claimsops-app/
 ├── .github/                    # CI/CD y plantillas de GitHub
 │   ├── ISSUE_TEMPLATE/         # Templates para bugs y features
@@ -45,7 +45,7 @@ claimsops-app/
 
 ## ARQUITECTURA DE CLAIMS SERVICE (Capas)
 
-```
+```text
 HTTP Request
     ↓
 Controllers/                # Capa de presentación
@@ -85,7 +85,8 @@ docker compose ps
 ```
 
 **Resultado esperado:**
-```
+
+```text
 NAME                         STATUS
 claimsops-postgres           Up (healthy)
 claimsops-claims-service     Up
@@ -105,6 +106,7 @@ curl http://localhost:8000/health
 ```
 
 **Resultado esperado:**
+
 ```json
 {"status":"healthy","service":"claims-service","timestamp":"2026-03-02T..."}
 {"status":"healthy","service":"audit-service","timestamp":"2026-03-02T..."}
@@ -123,7 +125,8 @@ bash tests/smoke-tests.sh
 ```
 
 **Resultado esperado:**
-```
+
+```text
 ========================================
 Test Summary
 ========================================
@@ -151,6 +154,7 @@ curl -X POST http://localhost:5115/api/claims \
 ```
 
 **Resultado esperado:**
+
 ```json
 {
   "id": "9c312731-e036-49fc-9c92-55629b759d59",
@@ -166,13 +170,14 @@ curl -X POST http://localhost:5115/api/claims \
 
 ---
 
-#### Ver todos los claims
+#### Listar todos los claims
 
 ```bash
 curl http://localhost:5115/api/claims
 ```
 
 **Resultado esperado:**
+
 ```json
 [
   {
@@ -196,6 +201,7 @@ curl http://localhost:5115/api/claims/<ID_DEL_CLAIM>
 ```
 
 **Ejemplo real:**
+
 ```bash
 curl http://localhost:5115/api/claims/9c312731-e036-49fc-9c92-55629b759d59
 ```
@@ -213,6 +219,7 @@ curl "http://localhost:8000/audit?claim_id=<ID_DEL_CLAIM>"
 ```
 
 **Resultado esperado:**
+
 ```json
 [
   {
@@ -259,6 +266,7 @@ docker exec -it claimsops-postgres psql -U admin -d claimsops_db
 ```
 
 **Comandos dentro de psql:**
+
 ```sql
 -- Ver todas las tablas
 \dt
@@ -339,7 +347,7 @@ cd docker && docker compose down
 ### Claims Service (puerto 5115)
 
 | Método | Endpoint | Descripción | Body de ejemplo |
-|--------|----------|-------------|-----------------|
+| ------- | ----------- | ------------- | ------------------- |
 | GET | `/health` | Health check | - |
 | POST | `/api/claims` | Crear claim | `{"memberId":"MBR001","amount":500.75,"currency":"USD"}` |
 | GET | `/api/claims` | Listar todos los claims | - |
@@ -349,7 +357,7 @@ cd docker && docker compose down
 ### Audit Service (puerto 8000)
 
 | Método | Endpoint | Descripción | Query Params |
-|--------|----------|-------------|--------------|
+| ------- | ----------- | ------------- | -------------------- |
 | GET | `/health` | Health check | - |
 | POST | `/audit` | Registrar evento | - |
 | GET | `/audit` | Listar eventos | `?claim_id=<guid>` (opcional) |
@@ -390,6 +398,7 @@ curl -X POST http://localhost:5115/api/claims \
 ```
 
 **Todas deben retornar:**
+
 ```json
 {
   "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
@@ -508,7 +517,7 @@ docker compose logs | grep -i "error\|exception"
 
 **Archivo:** `docker/.env`
 
-```env
+```bash
 # PostgreSQL Configuration
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin123
@@ -567,4 +576,4 @@ cd docker && docker compose down
 
 **Última actualización:** 2 de Marzo, 2026  
 **Autor:** Sofia Villarroel Z  
-**Repositorio:** https://github.com/SvillarroelZ/claimsops-app
+**Repositorio:** [https://github.com/SvillarroelZ/claimsops-app](https://github.com/SvillarroelZ/claimsops-app)

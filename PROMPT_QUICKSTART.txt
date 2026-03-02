@@ -1,0 +1,110 @@
+================================================================================
+PROMPT PARA GENERAR DOCUMENTACIÓN QUICKSTART EN OTROS PROYECTOS
+================================================================================
+
+Copia y pega este prompt en tu IA favorita (Claude, ChatGPT, etc.) para generar 
+documentación similar en otros proyectos:
+
+================================================================================
+
+Actúa como un arquitecto de software senior especializado en documentación técnica.
+
+Necesito que crees un archivo QUICKSTART.md para mi proyecto con las siguientes características:
+
+## Requisitos del documento:
+
+1. **Formato profesional y sin emojis** - Solo texto ASCII, tablas markdown y código
+
+2. **Estructura del proyecto** - Árbol de directorios completo con explicación de qué hace cada carpeta:
+   - Indica el propósito de cada directorio principal
+   - Explica la arquitectura (ej: capas, microservicios, módulos)
+   - Describe la responsabilidad de cada componente
+
+3. **Flujo de comandos ordenado paso a paso** para:
+   - PASO 1: Configuración inicial (clonar, instalar dependencias, configurar .env)
+   - PASO 2: Levantar la aplicación (docker compose, npm start, dotnet run, etc.)
+   - PASO 3: Verificar que todo funciona (health checks, curl, endpoints)
+   - PASO 4: Ejecutar tests (suite automática si existe)
+   - PASO 5: Pruebas manuales (ejemplos de uso real de la API/app)
+   - PASO 6: Ver logs y debugging
+   - PASO 7: Conectarse a la base de datos (si aplica)
+   - PASO 8: Detener todo correctamente
+
+4. **Cada comando debe incluir:**
+   - El comando exacto a ejecutar (copy-paste ready)
+   - Comentario explicando qué hace
+   - Resultado esperado (output real o ejemplo)
+   - Contexto de en qué directorio ejecutarlo
+
+5. **Secciones adicionales:**
+   - Tabla de endpoints con método HTTP, ruta, descripción y ejemplo de body
+   - Lista de URLs para abrir en el navegador (con explicación de qué muestran)
+   - Comandos rápidos (all-in-one para tareas comunes)
+   - Pruebas de validación (casos de error esperados)
+   - Troubleshooting (problemas comunes y soluciones)
+   - Variables de entorno (archivo .env con explicaciones)
+   - Resumen ejecutivo (probar todo en 1 minuto)
+
+6. **Estilo de escritura:**
+   - Lenguaje técnico pero claro
+   - Sin emojis ni caracteres Unicode decorativos
+   - Code blocks con lenguaje especificado (bash, json, sql, etc.)
+   - Saltos de línea consistentes alrededor de code blocks
+   - Tablas markdown para datos tabulares
+   - Headers bien jerarquizados (##, ###, ####)
+   - Énfasis con **negrita** para palabras clave
+
+7. **Validación markdown:**
+   - Sin errores de markdown lint
+   - Code blocks rodeados de líneas en blanco (MD031)
+   - Listas rodeadas de líneas en blanco (MD032)
+   - Headers con líneas en blanco alrededor (MD022)
+   - Tablas con formato consistente
+
+## Mi proyecto es:
+
+[DESCRIBE AQUÍ TU PROYECTO]
+
+**Stack tecnológico:**
+- [Backend: Node.js/Python/C#/Java/etc.]
+- [Frontend: React/Vue/Angular/etc. o N/A]
+- [Base de datos: PostgreSQL/MySQL/MongoDB/etc.]
+- [Infraestructura: Docker/Kubernetes/etc.]
+- [Otros servicios: Redis/RabbitMQ/etc.]
+
+**Comandos principales actuales:**
+- Para levantar: [comando]
+- Para ejecutar tests: [comando]
+- Para ver logs: [comando]
+
+**Endpoints principales:**
+- [Listar los endpoints más importantes]
+
+**Arquitectura:**
+- [Describe brevemente: monolito, microservicios, capas, etc.]
+
+================================================================================
+
+EJEMPLO DE OUTPUT ESPERADO:
+
+Genera un documento markdown completo que un desarrollador nuevo pueda seguir 
+desde cero para:
+1. Entender la estructura del proyecto
+2. Levantar todo el entorno
+3. Ejecutar pruebas
+4. Hacer llamadas a la API
+5. Debuggear problemas
+6. Detener todo limpiamente
+
+Todo debe ser copy-paste ready y con resultados esperados claramente indicados.
+
+================================================================================
+
+NOTAS ADICIONALES:
+- Si hay múltiples entornos (dev/staging/prod), documenta las diferencias
+- Si hay secretos/credenciales, indica cómo configurarlos de forma segura
+- Si hay migraciones de DB, incluye los comandos para aplicarlas
+- Si hay builds de frontend, incluye los pasos de compilación
+- Si hay dependencias externas (APIs de terceros), documenta cómo configurarlas
+
+================================================================================
