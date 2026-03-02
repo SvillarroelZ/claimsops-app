@@ -10,12 +10,14 @@ Be respectful, inclusive, and professional in all interactions.
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/claimsops-app.git
    cd claimsops-app
    ```
 
 3. **Set up development environment**:
+
    ```bash
    cd docker
    cp .env.example .env
@@ -23,6 +25,7 @@ Be respectful, inclusive, and professional in all interactions.
    ```
 
 4. **Create a feature branch**:
+
    ```bash
    git checkout -b feature/your-feature-name
    # OR
@@ -41,6 +44,7 @@ Be respectful, inclusive, and professional in all interactions.
 - `test/` - Adding or updating tests
 
 **Examples:**
+
 - `feature/add-claim-approval`
 - `fix/database-connection-leak`
 - `docs/update-api-documentation`
@@ -50,7 +54,7 @@ Be respectful, inclusive, and professional in all interactions.
 
 We use [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```text
 <type>: <description>
 
 [optional body]
@@ -59,6 +63,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 **Types:**
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation changes
@@ -68,7 +73,8 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` - Maintenance tasks
 
 **Examples:**
-```
+
+```text
 feat: add claim approval endpoint
 
 fix: resolve database connection timeout issue
@@ -82,13 +88,15 @@ chore: update Entity Framework to 10.0.1
 
 ### Code Style
 
-**C# (.NET)**
+#### C# (.NET)
+
 - Follow [Microsoft C# Coding Conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
 - Use PascalCase for public members
 - Use camelCase for private fields
 - Add XML documentation comments for public APIs
 
-**Python (FastAPI)**
+#### Python (FastAPI)
+
 - Follow [PEP 8](https://peps.python.org/pep-0008/)
 - Use snake_case for functions and variables
 - Add type hints
@@ -98,6 +106,7 @@ chore: update Entity Framework to 10.0.1
 
 - Write unit tests for new features
 - Ensure all tests pass before submitting PR:
+
   ```bash
   # .NET tests
   cd services/claims-service
@@ -117,12 +126,14 @@ chore: update Entity Framework to 10.0.1
 ## Submitting a Pull Request
 
 1. **Commit your changes**:
+
    ```bash
    git add .
    git commit -m "feat: add your feature"
    ```
 
 2. **Push to your fork**:
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -143,6 +154,7 @@ chore: update Entity Framework to 10.0.1
    - Push updates to the same branch
 
 5. **Squash commits** (if requested):
+
    ```bash
    git rebase -i HEAD~N  # N = number of commits
    # Mark commits as 'squash' except the first

@@ -1,6 +1,6 @@
 # ClaimsOps Application
 
-[**English**](README.md) | [**Español**](#)
+[**English**](README.md) | [**Español**](README.es.md)
 
 Sistema de gestión de reclamaciones de seguros de nivel empresarial, construido con arquitectura de microservicios.
 
@@ -13,12 +13,14 @@ Sistema de gestión de reclamaciones de seguros de nivel empresarial, construido
 
 1. Abre este repositorio en Codespaces
 2. En la terminal, configura las variables de entorno:
+
    ```bash
    cd docker
    cp .env.example .env
    ```
 
 3. Inicia todos los servicios:
+
    ```bash
    docker compose -f docker-compose.yml up -d --build
    ```
@@ -38,6 +40,7 @@ Sistema de gestión de reclamaciones de seguros de nivel empresarial, construido
    - **Health Check:** `https://YOUR-CODESPACE-NAME-5115.app.github.dev/health`
 
 6. **Desde la terminal** (siempre funciona):
+
    ```bash
    # Verifica que los servicios estén corriendo
    curl http://localhost:5115/health | jq .
@@ -82,7 +85,7 @@ curl -X POST http://localhost:5115/api/claims \
 
 ## Arquitectura
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │          Red Docker Compose                  │
 ├─────────────────────────────────────────────┤
@@ -106,7 +109,7 @@ curl -X POST http://localhost:5115/api/claims \
 ### Servicios Backend
 
 | Componente | Tecnología | Puerto | Propósito |
-|-----------|-----------|--------|-----------|
+| ----------- | ----------- | -------- | ----------- |
 | **Claims Service** | C# .NET 10.0 | 5115 | API principal para gestión de reclamaciones |
 | **Audit Service** | Python 3.11 + FastAPI | 8000 | Grabación de eventos de auditoría |
 | **Database** | PostgreSQL 15 | 5432 | Persistencia de datos |
@@ -121,7 +124,7 @@ curl -X POST http://localhost:5115/api/claims \
 
 ## Estructura del Proyecto
 
-```
+```text
 claimsops-app/
 ├── services/
 │   ├── claims-service/        # API Web C# .NET
@@ -158,7 +161,7 @@ claimsops-app/
 ### Claims Service (C# .NET)
 
 | Método | Endpoint | Descripción | Respuesta |
-|--------|----------|-------------|----------|
+| -------- | ---------- | ------------- | ---------- |
 | GET | `/health` | Health check | 200 OK |
 | POST | `/api/claims` | Crear nueva reclamación | 201 Created |
 | GET | `/api/claims` | Listar todas las reclamaciones | 200 OK |
@@ -167,7 +170,7 @@ claimsops-app/
 ### Audit Service (Python FastAPI)
 
 | Método | Endpoint | Descripción | Respuesta |
-|--------|----------|-------------|----------|
+| -------- | ---------- | ------------- | ---------- |
 | GET | `/health` | Health check | 200 OK |
 | POST | `/audit` | Grabar evento de auditoría | 201 Created |
 | GET | `/audit` | Listar todos los eventos | 200 OK |
@@ -204,7 +207,7 @@ docker compose -f docker-compose.yml up -d --build
 docker-compose up -d --build
 ```
 
-**3. Verificar Salud de Servicios**
+### 3. Verificar Salud de Servicios
 
 ```bash
 # Espera 10 segundos para que inicie
@@ -236,7 +239,7 @@ curl http://localhost:5115/api/claims | jq .
 curl http://localhost:8000/audit | jq .
 ```
 
-**5. Detener Servicios**
+### 5. Detener Servicios
 
 ```bash
 # Detiene servicios (mantiene datos)
@@ -414,18 +417,21 @@ Ver [docs/runbook.md](docs/runbook.md#troubleshooting) para más detalles.
 ## Decisiones Tecnológicas
 
 ### ¿Por qué .NET para Claims Service?
+
 - Seguridad de tipos y validación en tiempo de compilación
 - Madurez empresarial en industrias reguladas
 - Ecosistema rico (EF Core, autenticación, logging)
 - Alto performance para operaciones CRUD
 
 ### ¿Por qué Python/FastAPI para Audit Service?
+
 - Desarrollo rápido (< 1 hora para construir MVP)
 - Boilerplate mínimo para operaciones CRUD simples
 - Documentación OpenAPI auto-generada
 - Demuestra arquitectura de microservicios políglotos
 
 ### ¿Por qué PostgreSQL?
+
 - Cumplimiento ACID para transacciones financieras
 - Código abierto y libre (sin costos de licencia)
 - Soporte JSON para datos híbrido relacional/documento
@@ -436,6 +442,7 @@ Ver [docs/runbook.md](docs/runbook.md#technology-stack-overview) para razonamien
 ## Hoja de Ruta
 
 ### Fase 1: MVP (Completada)
+
 - [x] API CRUD de Reclamaciones con persistencia PostgreSQL
 - [x] Servicio de auditoría con almacenamiento en memoria
 - [x] Orquestación Docker Compose
@@ -443,6 +450,7 @@ Ver [docs/runbook.md](docs/runbook.md#technology-stack-overview) para razonamien
 - [x] Documentación completa
 
 ### Fase 2: Mejoras (Futuro)
+
 - [ ] Persistencia de base de datos para audit-service
 - [ ] Pruebas unitarias (xUnit + pytest)
 - [ ] Middleware para manejo de errores
@@ -450,11 +458,13 @@ Ver [docs/runbook.md](docs/runbook.md#technology-stack-overview) para razonamien
 - [ ] Autenticación JWT
 
 ### Fase 3: Frontend (Futuro)
+
 - [ ] Dashboard Next.js
 - [ ] UI para crear/listar/ver reclamaciones
 - [ ] Cliente API tipado
 
 ### Fase 4: Producción (Futuro)
+
 - [ ] Pipeline CI/CD (GitHub Actions)
 - [ ] Manifiestos Kubernetes
 - [ ] Monitoring (Prometheus + Grafana)
@@ -474,9 +484,9 @@ MIT License - Ver archivo LICENSE para detalles
 ## Soporte
 
 - **Documentación:** [docs/runbook.md](docs/runbook.md)
-- **Issues:** https://github.com/SvillarroelZ/claimsops-app/issues
+- **Issues:** <https://github.com/SvillarroelZ/claimsops-app/issues>
 - **Contacto:** Engineering Team
 
 ---
 
-**Construido con ❤️ como un MVP completo para gestión empresarial de reclamaciones de seguros**
+Construido como un MVP completo para gestión empresarial de reclamaciones de seguros.
