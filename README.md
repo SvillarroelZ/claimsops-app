@@ -319,9 +319,8 @@ docker-compose up -d --build claims-service
 
 ## Documentation
 
-- **[Complete Technical Runbook](docs/runbook.md)** - System setup, operating procedures, and failure handling
-- **[Security Documentation](docs/security.md)** - Secrets handling, validation controls, and deployment safeguards
-- **[Docker Guide](docker/README.md)** - Container topology, network flow, and runtime operations
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete technical documentation (system design, technology decisions, security, development guide)
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 
 ## Common Commands
 
@@ -413,7 +412,7 @@ cd services/claims-service
 dotnet ef database update
 ```
 
-See [docs/runbook.md](docs/runbook.md#troubleshooting) for more details.
+See [ARCHITECTURE.md](ARCHITECTURE.md#operations) for more details.
 
 ## Technology Decisions
 
@@ -438,7 +437,7 @@ See [docs/runbook.md](docs/runbook.md#troubleshooting) for more details.
 - JSON support for hybrid relational/document data
 - Proven scalability
 
-See [docs/runbook.md](docs/runbook.md#technology-stack-overview) for full rationale.
+See [ARCHITECTURE.md](ARCHITECTURE.md#technology-decisions) for full rationale.
 
 ## Roadmap
 
