@@ -6,14 +6,14 @@
 ## Tabla de Contenidos
 
 1. [Descripción General del Sistema](#descripción-general-del-sistema)
-2. [Stack Tecnológico](#stack-tecnológico)
-3. [Decisiones de Arquitectura](#decisiones-de-arquitectura)
-4. [Ciclo de Vida de Requests](#ciclo-de-vida-de-requests)
-5. [Flujo de Datos](#flujo-de-datos)
-6. [Infraestructura](#infraestructura)
-7. [Seguridad](#seguridad)
-8. [Guía de Desarrollo](#guía-de-desarrollo)
-9. [Operaciones](#operaciones)
+1. [Stack Tecnológico](#stack-tecnológico)
+1. [Decisiones de Arquitectura](#decisiones-de-arquitectura)
+1. [Ciclo de Vida de Requests](#ciclo-de-vida-de-requests)
+1. [Flujo de Datos](#flujo-de-datos)
+1. [Infraestructura](#infraestructura)
+1. [Seguridad](#seguridad)
+1. [Guía de Desarrollo](#guía-de-desarrollo)
+1. [Operaciones](#operaciones)
 
 ---
 
@@ -68,6 +68,7 @@ ClaimsOps es un sistema de gestión de reclamos de seguros basado en microservic
 **Propósito:** API primaria para operaciones de reclamos (crear, leer, actualizar, eliminar)
 
 **¿Por qué .NET?**
+
 - **Seguridad de tipos:** El tipado fuerte reduce errores en runtime en producción
 - **Rendimiento:** Optimizado para cargas de trabajo de alto throughput
 - **Madurez enterprise:** Probado en industrias reguladas (finanzas, salud, seguros)
@@ -75,6 +76,7 @@ ClaimsOps es un sistema de gestión de reclamos de seguros basado en microservic
 - **Validación en tiempo de compilación:** Muchos bugs detectados antes del deploy
 
 **Tecnologías clave:**
+
 - ASP.NET Core 10.0 - Framework web
 - Entity Framework Core 10.0 - ORM con migraciones
 - Npgsql - Driver PostgreSQL
@@ -85,6 +87,7 @@ ClaimsOps es un sistema de gestión de reclamos de seguros basado en microservic
 **Propósito:** Servicio liviano de registro de eventos para trazabilidad operacional
 
 **¿Por qué Python + FastAPI?**
+
 - **Desarrollo rápido:** MVP construido en menos de 1 hora
 - **Mínimo boilerplate:** Menos código comparado con Java/C# para servicios simples
 - **Soporte async:** Basado en ASGI para alta concurrencia
@@ -92,6 +95,7 @@ ClaimsOps es un sistema de gestión de reclamos de seguros basado en microservic
 - **Demostración políglota:** Muestra independencia de servicios
 
 **Tecnologías clave:**
+
 - FastAPI - Framework web async moderno
 - Pydantic - Validación de datos
 - Uvicorn - Servidor ASGI
@@ -102,6 +106,7 @@ ClaimsOps es un sistema de gestión de reclamos de seguros basado en microservic
 #### PostgreSQL 15
 
 **¿Por qué PostgreSQL?**
+
 - **Cumplimiento ACID:** Requerido para integridad de transacciones financieras
 - **Soporte JSON:** Flexibilidad híbrida relacional + documento
 - **Código abierto:** Sin costos de licenciamiento
@@ -109,6 +114,7 @@ ClaimsOps es un sistema de gestión de reclamos de seguros basado en microservic
 - **Comunidad:** Gran ecosistema de herramientas y extensiones
 
 **Gestión de esquema:**
+
 - Migraciones Entity Framework Core (code-first)
 - Cambios de esquema versionados
 - Aplicación automática al iniciar
@@ -120,12 +126,14 @@ ClaimsOps es un sistema de gestión de reclamos de seguros basado en microservic
 **Propósito:** Orquestación multi-contenedor para desarrollo local
 
 **Beneficios:**
+
 - **Reproducibilidad:** Entornos idénticos para todos los desarrolladores
 - **Dependencias de servicios:** Orden de inicio automático con health checks
 - **Aislamiento:** Cada servicio tiene dependencias independientes
 - **Reset fácil:** `docker compose down -v` para estado limpio
 
 **Red:**
+
 - Red bridge `claimsops-network`
 - Resolución DNS servicio-a-servicio
 - Comunicación interna (postgres, claims-service, audit-service)
@@ -149,6 +157,7 @@ PostgreSQL       → Almacenamiento persistente
 ```
 
 **¿Por qué este patrón?**
+
 - **Separación de concerns:** Cada capa tiene responsabilidad única
 - **Testabilidad:** Se pueden mockear dependencias para unit tests
 - **Mantenibilidad:** Cambios aislados a capas específicas
@@ -157,13 +166,16 @@ PostgreSQL       → Almacenamiento persistente
 ### DTOs vs Modelos de Dominio
 
 **DTOs (Data Transfer Objects):**
+
 - `CreateClaimRequest` - Contrato de entrada API
 - `ClaimResponse` - Contrato de salida API
 
 **Modelo de Dominio:**
+
 - `Claim` - Representación interna de entidad
 
 **¿Por qué separados?**
+
 - **Estabilidad API:** Puedes cambiar modelo interno sin romper clientes
 - **Límite de validación:** DTOs enforzan restricciones externas
 - **Seguridad:** No expones campos internos (audit trails, soft deletes)
@@ -182,11 +194,13 @@ try {
 ```
 
 **¿Por qué este enfoque?**
+
 - **Resiliencia:** Operación primaria exitosa incluso si audit service está caído
 - **Ruta no crítica:** Audit es observabilidad, no requisito de negocio
 - **Degradación elegante:** Sistema permanece operacional durante fallas parciales
 
 **Trade-offs:**
+
 - **Consistencia eventual:** Eventos de audit pueden retrasarse o perderse
 - **Sin entrega garantizada:** Para audit crítico, usar cola de mensajes (Kafka, RabbitMQ)
 
@@ -325,12 +339,14 @@ public class Claim
 ### Migraciones
 
 **Crear migración:**
+
 ```bash
 cd services/claims-service
 dotnet ef migrations add NombreDescriptivo
 ```
 
 **Aplicar migración:**
+
 ```bash
 # Manual
 dotnet ef database update
@@ -340,13 +356,14 @@ dotnet ef database update
 ```
 
 **Ubicación archivos migración:**
+
 - `services/claims-service/Migrations/`
 - Versionados (parte del historial git)
 - Aplicados automáticamente cuando contenedor inicia
 
 ---
 
-## Infraestructura
+## Componentes Docker
 
 ### Configuración Docker Compose
 
@@ -359,14 +376,17 @@ dotnet ef database update
 | audit-service | Custom (Python) | 8000 | - | Registro eventos |
 
 **Red:**
+
 - Tipo: Bridge
 - Nombre: `claimsops-network`
 - DNS: Resolución automática de servicios (ej. `http://postgres:5432`)
 
 **Volúmenes:**
+
 - `postgres_data` → `/var/lib/postgresql/data` (almacenamiento persistente)
 
 **Health checks:**
+
 ```yaml
 postgres:
   healthcheck:
@@ -379,6 +399,7 @@ postgres:
 ### Variables de Entorno
 
 **Variables requeridas** (definir en `docker/.env`):
+
 ```bash
 # Base de datos
 POSTGRES_USER=claimsops_user
@@ -397,11 +418,13 @@ AUDIT_SERVICE_URL=http://audit-service:8000
 ### Comunicación entre Servicios
 
 **Claims Service → PostgreSQL:**
+
 - Protocolo: Protocolo wire PostgreSQL
 - Conexión: `Host=postgres;Port=5432;...`
 - Driver: Npgsql via Entity Framework Core
 
 **Claims Service → Audit Service:**
+
 - Protocolo: HTTP/JSON
 - URL: `http://audit-service:8000/audit`
 - Método: POST (no bloqueante)
@@ -415,7 +438,8 @@ AUDIT_SERVICE_URL=http://audit-service:8000
 #### Desarrollo Local
 
 **Estructura archivos:**
-```
+
+```text
 docker/
 ├── .env              ← Contiene secretos (NUNCA COMMITEAR)
 ├── .env.example      ← Template (SEGURO PARA COMMIT)
@@ -423,12 +447,14 @@ docker/
 ```
 
 **Generar password seguro:**
+
 ```bash
 openssl rand -base64 24
 # Copiar resultado a docker/.env
 ```
 
 **Verificación:**
+
 ```bash
 # Revisar que .env está ignorado
 grep "\.env" .gitignore
@@ -449,6 +475,7 @@ git status | grep "\.env"  # Debe estar vacío
 | Kubernetes | Secrets | Recursos ConfigMap + Secret |
 
 **Nunca:**
+
 - ❌ Hardcodear credenciales en código
 - ❌ Commitear archivos `.env`
 - ❌ Loguear datos sensibles
@@ -459,6 +486,7 @@ git status | grep "\.env"  # Debe estar vacío
 **Capas de validación:**
 
 1. **Data Annotations DTO** (automático):
+
 ```csharp
 public class CreateClaimRequest
 {
@@ -472,13 +500,15 @@ public class CreateClaimRequest
 }
 ```
 
-2. **Model State** (controller):
+1. **Model State** (controller):
+
 ```csharp
 if (!ModelState.IsValid)
     return BadRequest(ModelState);
 ```
 
-3. **Reglas de Negocio** (capa servicio):
+1. **Reglas de Negocio** (capa servicio):
+
 ```csharp
 if (claim.Amount > MAX_CLAIM_AMOUNT)
     throw new BusinessException("Monto excede límite");
@@ -487,6 +517,7 @@ if (claim.Amount > MAX_CLAIM_AMOUNT)
 ### Configuración CORS
 
 **Actual** (`appsettings.json`):
+
 ```json
 {
   "Cors": {
@@ -507,6 +538,7 @@ if (claim.Amount > MAX_CLAIM_AMOUNT)
 **Estado actual:** No implementado (MVP Fase 1)
 
 **Roadmap (Fase 2):**
+
 - Autenticación basada en tokens JWT
 - Control de acceso basado en roles (RBAC)
 - API keys servicio-a-servicio
@@ -547,11 +579,13 @@ curl http://localhost:8000/health
 ### Desarrollo Local (Sin Docker)
 
 **Terminal 1 - PostgreSQL:**
+
 ```bash
 docker compose up -d postgres
 ```
 
 **Terminal 2 - Claims Service:**
+
 ```bash
 cd services/claims-service
 
@@ -565,6 +599,7 @@ dotnet run
 ```
 
 **Terminal 3 - Audit Service:**
+
 ```bash
 cd services/audit-service
 
@@ -595,17 +630,18 @@ dotnet ef database update
 ### Agregar Nuevos Endpoints
 
 1. **Definir DTO** (`DTOs/TuRequestDto.cs`)
-2. **Agregar Método Repository** (`Repositories/ITuRepository.cs`)
-3. **Implementar Repository** (`Repositories/TuRepository.cs`)
-4. **Agregar Método Service** (`Services/ITuService.cs`)
-5. **Implementar Service** (`Services/TuService.cs`)
-6. **Agregar Action Controller** (`Controllers/TuController.cs`)
-7. **Registrar DI** (si hay nuevas interfaces en `Program.cs`)
-8. **Testear localmente** con `dotnet run`
+1. **Agregar Método Repository** (`Repositories/ITuRepository.cs`)
+1. **Implementar Repository** (`Repositories/TuRepository.cs`)
+1. **Agregar Método Service** (`Services/ITuService.cs`)
+1. **Implementar Service** (`Services/TuService.cs`)
+1. **Agregar Action Controller** (`Controllers/TuController.cs`)
+1. **Registrar DI** (si hay nuevas interfaces en `Program.cs`)
+1. **Testear localmente** con `dotnet run`
 
 ### Testing
 
 **Tests manuales:**
+
 ```bash
 # Health checks
 curl http://localhost:5115/health
@@ -624,6 +660,7 @@ curl http://localhost:8000/audit
 ```
 
 **Tests automatizados** (futuro):
+
 - xUnit para unit tests C#
 - pytest para tests Python
 - Integration tests con test containers
@@ -635,6 +672,7 @@ curl http://localhost:8000/audit
 ### Comandos Comunes
 
 **Docker Compose:**
+
 ```bash
 # Iniciar todos los servicios
 docker compose -f docker/docker-compose.yml up -d
@@ -662,6 +700,7 @@ docker compose -f docker/docker-compose.yml down -v
 ```
 
 **Acceso Base de Datos:**
+
 ```bash
 # Conectar a PostgreSQL
 docker exec -it claimsops-postgres psql -U claimsops_user -d claimsops_db
@@ -673,6 +712,7 @@ SELECT * FROM claims;
 ```
 
 **Comandos .NET:**
+
 ```bash
 cd services/claims-service
 
@@ -685,6 +725,7 @@ dotnet add package NombrePaquete  # Instalar paquete NuGet
 ### Solución de Problemas (Troubleshooting)
 
 **Puerto ya en uso:**
+
 ```bash
 # Encontrar proceso
 lsof -i :5115
@@ -696,6 +737,7 @@ ports:
 ```
 
 **Falla conexión base de datos:**
+
 ```bash
 # Verificar PostgreSQL está corriendo
 docker compose ps postgres
@@ -711,6 +753,7 @@ docker compose up -d claims-service
 ```
 
 **Migraciones no aplicadas:**
+
 ```bash
 # Revisar logs
 docker compose logs claims-service | grep migration
@@ -721,6 +764,7 @@ dotnet ef database update
 ```
 
 **Claims service no puede alcanzar audit service:**
+
 ```bash
 # Verificar red
 docker network ls | grep claimsops
@@ -733,6 +777,7 @@ docker exec -it claimsops-claims-service printenv AUDIT_SERVICE_URL
 ```
 
 **Reset completo (clean slate):**
+
 ```bash
 # Opción nuclear - remueve todo
 docker compose down -v
@@ -743,6 +788,7 @@ docker compose up -d --build
 ### Monitoreo (Futuro)
 
 **Roadmap Fase 4:**
+
 - Prometheus para recolección de métricas
 - Grafana para dashboards de visualización
 - OpenTelemetry para tracing distribuido
