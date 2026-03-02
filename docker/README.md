@@ -36,7 +36,7 @@ openssl rand -base64 24
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `POSTGRES_USER` | Database username | claimsops_user | Yes |
-| `POSTGRES_PASSWORD` | Database password | (none) | ✅ **Must be set** |
+| `POSTGRES_PASSWORD` | Database password | (none) | **Must be set** |
 | `POSTGRES_DB` | Database name | claimsops_db | Yes |
 | `POSTGRES_PORT` | Host port for PostgreSQL | 5432 | Yes |
 

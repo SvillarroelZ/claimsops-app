@@ -351,7 +351,7 @@ This project can be run in two environments:
 ```bash
 cd docker
 cp .env.example .env
-# ⚠️  IMPORTANT: .env must be in docker/ folder
+# IMPORTANT: .env must be in docker/ folder
 ```
 
 **Step 3: Start Services**
@@ -426,7 +426,7 @@ cd claimsops-app
 # Navigate to docker folder and copy the example environment file
 cd docker
 cp .env.example .env
-# ⚠️  IMPORTANT: .env must be in docker/ folder, not in repository root
+# IMPORTANT: .env must be in docker/ folder, not in repository root
 
 # Edit if needed (default values are fine for local development)
 cat .env

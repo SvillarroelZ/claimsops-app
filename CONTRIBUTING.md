@@ -193,4 +193,4 @@ By contributing, you agree that your contributions will be licensed under the [M
 
 ---
 
-Thank you for contributing to ClaimsOps! 🎉
+Thank you for contributing to ClaimsOps.

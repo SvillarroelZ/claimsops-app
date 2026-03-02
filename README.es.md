@@ -191,7 +191,7 @@ git clone https://github.com/SvillarroelZ/claimsops-app.git
 cd claimsops-app
 cd docker
 cp .env.example .env
-# ⚠️  IMPORTANTE: .env debe estar en carpeta docker/, no en raíz del repositorio
+# IMPORTANTE: .env debe estar en carpeta docker/, no en raíz del repositorio
 ```
 
 **2. Iniciar Todos los Servicios** (desde carpeta docker/)
@@ -315,9 +315,9 @@ docker-compose up -d --build claims-service
 
 ## Documentación
 
-- **📘 [Runbook Técnico Completo](docs/runbook.md)** - Guía profunda con explicaciones tecnológicas
-- **🔒 [Documentación de Seguridad](docs/security.md)** - Consideraciones de seguridad
-- **🐳 [Guía Docker](docker/README.md)** - Detalles de orquestación de contenedores
+- **[Runbook Técnico Completo](docs/runbook.md)** - Guía profunda con explicaciones tecnológicas
+- **[Documentación de Seguridad](docs/security.md)** - Consideraciones de seguridad
+- **[Guía Docker](docker/README.md)** - Detalles de orquestación de contenedores
 
 ## Comandos Comunes
 
@@ -372,7 +372,7 @@ CLAIM_ID=$(echo $CLAIM | jq -r '.id')
 echo "\nVerifying audit event..."
 curl -s "http://localhost:8000/audit?claim_id=$CLAIM_ID" | jq .
 
-echo "\n✅ MVP Test Complete"
+echo "\nMVP Test Complete"
 ```
 
 ## Solución de Problemas
@@ -435,7 +435,7 @@ Ver [docs/runbook.md](docs/runbook.md#technology-stack-overview) para razonamien
 
 ## Hoja de Ruta
 
-### Fase 1: MVP ✅ (Completada)
+### Fase 1: MVP (Completada)
 - [x] API CRUD de Reclamaciones con persistencia PostgreSQL
 - [x] Servicio de auditoría con almacenamiento en memoria
 - [x] Orquestación Docker Compose
