@@ -1,7 +1,7 @@
 # ClaimsOps Application - Technical Runbook
 
 **Version:** 1.0.0  
-**Last Updated:** February 27, 2026  
+**Last Updated:** March 2, 2026  
 **Environment:** Development (MVP)
 
 ---
@@ -347,13 +347,19 @@ This project can be run in two environments:
 - Click "Code" → "Codespaces" → "Create codespace on main"
 - Wait for container to build (happens automatically)
 
-**Step 2: Start Services**
+**Step 2: Configure Environment**
 ```bash
 cd docker
-docker-compose up -d --build
+cp .env.example .env
+# ⚠️  IMPORTANT: .env must be in docker/ folder
 ```
 
-**Step 3: Make Ports Public**
+**Step 3: Start Services**
+```bash
+docker compose -f docker-compose.yml up -d --build
+```
+
+**Step 4: Make Ports Public**
 
 GitHub Codespaces ports are private by default. To access services in your browser:
 
@@ -363,7 +369,7 @@ GitHub Codespaces ports are private by default. To access services in your brows
 4. In the Ports panel, find ports **8000** and **5115**
 5. Right-click each port → **Port Visibility** → **Public**
 
-**Step 4: Access Services**
+**Step 5: Access Services**
 
 Get your Codespace name by running:
 ```bash
@@ -417,8 +423,10 @@ cd claimsops-app
 **Step 2: Create Environment Configuration**
 
 ```bash
-# Copy the example environment file
+# Navigate to docker folder and copy the example environment file
+cd docker
 cp .env.example .env
+# ⚠️  IMPORTANT: .env must be in docker/ folder, not in repository root
 
 # Edit if needed (default values are fine for local development)
 cat .env
@@ -435,7 +443,10 @@ cat .env
 ### Step 3: Build and Start Services
 
 ```bash
-cd docker
+# From docker/ folder (where .env is located)
+docker compose -f docker-compose.yml up -d --build
+
+# OR using old syntax (still works)
 docker-compose up -d --build
 ```
 
@@ -459,7 +470,7 @@ docker-compose up -d --build
 
 ```bash
 # Check container status
-docker-compose ps
+docker compose -f docker-compose.yml ps
 
 # Expected output shows all services "Up" or "Up (healthy)"
 ```
@@ -482,12 +493,12 @@ curl http://localhost:5115/api/claims | jq .
 
 ```bash
 # All services
-docker-compose logs -f
+docker compose -f docker-compose.yml logs -f
 
 # Specific service
-docker-compose logs -f claims-service
-docker-compose logs -f audit-service
-docker-compose logs -f postgres
+docker compose -f docker-compose.yml logs -f claims-service
+docker compose -f docker-compose.yml logs -f audit-service
+docker compose -f docker-compose.yml logs -f postgres
 ```
 
 ---
@@ -498,30 +509,30 @@ docker-compose logs -f postgres
 
 ```bash
 cd docker
-docker-compose up -d
+docker compose -f docker-compose.yml up -d
 ```
 
 ### Stopping Services
 
 ```bash
 # Stop without removing containers
-docker-compose stop
+docker compose -f docker-compose.yml stop
 
 # Stop and remove containers (data persists in volumes)
-docker-compose down
+docker compose -f docker-compose.yml down
 
 # Stop, remove containers, and DELETE ALL DATA
-docker-compose down -v
+docker compose -f docker-compose.yml down -v
 ```
 
 ### Rebuilding After Code Changes
 
 ```bash
 # Rebuild specific service
-docker-compose up -d --build claims-service
+docker compose -f docker-compose.yml up -d --build claims-service
 
 # Rebuild all services
-docker-compose up -d --build
+docker compose -f docker-compose.yml up -d --build
 ```
 
 ---
@@ -639,7 +650,7 @@ curl "http://localhost:8000/audit?claim_id=7c5ee6b1-540c-4daf-a9f1-3a72c94be865"
 
 ```bash
 # Connect to PostgreSQL container
-docker exec -it claimsops-postgres psql -U postgres -d claimsdb
+docker exec -it claimsops-postgres psql -U claimsops_user -d claimsops_db
 
 # Run SQL query
 SELECT * FROM "Claims";
@@ -655,32 +666,36 @@ SELECT * FROM "Claims";
 ### Docker Compose
 
 ```bash
-# Start all services
-docker-compose up -d
+# Start all services (modern syntax - recommended)
+docker compose -f docker/docker-compose.yml up -d
 
 # Start with build (after code changes)
-docker-compose up -d --build
+docker compose -f docker/docker-compose.yml up -d --build
 
 # Stop services
-docker-compose stop
+docker compose -f docker/docker-compose.yml stop
 
 # Stop and remove containers
-docker-compose down
+docker compose -f docker/docker-compose.yml down
 
 # Stop, remove containers, and delete volumes (full reset)
-docker-compose down -v
+docker compose -f docker/docker-compose.yml down -v
 
 # View logs
-docker-compose logs -f [service-name]
+docker compose -f docker/docker-compose.yml logs -f [service-name]
 
 # Check service status
-docker-compose ps
+docker compose -f docker/docker-compose.yml ps
 
 # Restart specific service
-docker-compose restart claims-service
+docker compose -f docker/docker-compose.yml restart claims-service
 
 # Execute command in running container
 docker exec -it claimsops-claims-service /bin/bash
+
+# Old syntax (still works if you're in docker/ folder)
+cd docker
+docker-compose up -d
 ```
 
 ### .NET Commands (Claims Service)
@@ -750,8 +765,8 @@ deactivate
 ### PostgreSQL Commands
 
 ```bash
-# Connect to database
-docker exec -it claimsops-postgres psql -U postgres -d claimsdb
+# Connect to database (use actual credentials from docker/.env)
+docker exec -it claimsops-postgres psql -U claimsops_user -d claimsops_db
 
 # Inside psql:
 \dt                # List tables
@@ -760,10 +775,10 @@ SELECT * FROM "Claims";  # Query data
 \q                 # Quit
 
 # Create database backup
-docker exec claimsops-postgres pg_dump -U postgres claimsdb > backup.sql
+docker exec claimsops-postgres pg_dump -U claimsops_user claimsops_db > backup.sql
 
 # Restore from backup
-cat backup.sql | docker exec -i claimsops-postgres psql -U postgres -d claimsdb
+cat backup.sql | docker exec -i claimsops-postgres psql -U claimsops_user -d claimsops_db
 ```
 
 ### Git Workflow
