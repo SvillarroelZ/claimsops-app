@@ -41,8 +41,11 @@ HTTP Request
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/health` | Service health status |
-
-Additional endpoints will be added in Phase 4.
+| GET | `/api/claims` | List all claims |
+| GET | `/api/claims/{id}` | Get specific claim by ID |
+| POST | `/api/claims` | Create a new claim |
+| PUT | `/api/claims/{id}` | Update an existing claim |
+| DELETE | `/api/claims/{id}` | Delete a claim |
 
 ## Configuration
 
@@ -52,11 +55,9 @@ Additional endpoints will be added in Phase 4.
 |---------|-------------|
 | `Logging:LogLevel` | Minimum log level (Information, Warning, Error) |
 | `ServiceSettings:ServiceName` | Service identifier for logging and health checks |
+| `ServiceSettings:AuditServiceUrl` | URL of the audit-service for logging events |
+| `ConnectionStrings:DefaultConnection` | PostgreSQL database connection string |
 | `Cors:AllowedOrigins` | Frontend URLs allowed to call this API |
-
-### Environment Variables
-
-Database connection will be configured in Phase 5 via environment variables.
 
 ## Running Locally
 
